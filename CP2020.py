@@ -1,40 +1,62 @@
 import plx_gpib_ethernet
 
-class CP2020:
+class CP2020(plx_gpib_ethernet.PrologixGPIBEthernetDevice):
     '''
     A class that uses the prologix-gpib-ethernet library by nelsond
     to interface a Flann CP2020 controller.
 
     Check out https://github.com/nelsond/prologix-gpib-ethernet
 
-    Last modified: 19/10/2020 by Eugenio Senes
+    Last modified: 20/10/2020 by Eugenio Senes
     '''
 
     def __init__(self, hostname, gpib_address):
-        self = plx_gpib_ethernet.PrologixGPIBEthernetDevice(host=hostname, address=gpib_address)
+        super().__init__(host=hostname, address=gpib_address)
         self.connect()
         print(self.idn())
 
-    def get_channel(self):
-        return self.query('CHAN?')
+        print('Channel A:')
+        print(self.query('INSTIDA?'))
+        print('Channel B:')
+        print(self.query('INSTIDB?'))
 
-    def set_channel(self, channel):
-        if channel == "A" or channel == "B":
-            return self.write('CHAN '+channel)
-        else:
-            raise ValueError('There are only 2 channels.')
 
+    # ----- GENERAL INSTRUMENT CONTROL
+    def get_gpib_address(self):
+        return int(self.query('ADDRSET?'))
+
+    def set_gpib_address(self, new_addr):
+        return self.write('ADDRSET '+str(new_addr))
+
+    def reset(self):
+        self.write('RESET')
+
+    # ----- CHANNEL CONTROL
     def get_instrument(self, channel):
         '''
         Returns the name of the instrument connected at that channel.
         '''
         if channel == "A":
-            return self.query('INSTDA?')
+            return self.query('INSTIDA?')
         elif channel == "B":
-            return self.query('INSTDB?')
+            return self.query('INSTIDB?')
         else:
-            raise ValueError('There are only 2 channels.')
+            raise ValueError('Wrong channel name')
 
+    def get_channel(self):
+        msg = int(self.query('CHAN?'))
+        if msg == 1:
+            return "A"
+        elif msg == 2:
+            return "B"
+
+    def set_channel(self, channel):
+        if channel == "A" or channel == "B":
+            return self.write('CHAN '+channel)
+        else:
+            raise ValueError('Wrong channel name')
+
+    # ----- MODE CONTROL
     def get_mode(self, human=False):
         '''
         0 = value mode; 1 = step mode
@@ -46,17 +68,51 @@ class CP2020:
         else:
             return self.query('MODE?')
 
-    def reset(self):
-        self.write('RESET')
-        return "Done"
+    # ----- INCREASE MODE
+    def get_increase_step(self):
+        return float(self.query('ISET?'))
 
-    def get_value(self):
-        return self.query('VSET?')
+    def set_increase_step(self, step):
+        return self.write('ISET '+str(step))
+
+    def increase(self):
+        return self.write('INC')
+
+    def decrease(self):
+        return self.write('DEC')
+
+    # ----- VALUE MODE
+    def get_value(self): # use this also for read current value
+        return float(self.query('VSET?'))
 
     def set_value(self, value):
         return self.write('VSET '+str(value))
 
+    # ----- STEP MODE
+    def get_motor_steps(self):
+        return int(self.query('SSET?'))
+
+    def set_motor_steps(self, step):
+        return self.write('SSET '+str(step))
 
 
-myAtt = CP2020("128.141.161.70", 11)
-myAtt.get_channel()
+
+
+
+
+
+
+
+
+
+
+
+# myAtt = CP2020("128.141.161.230", 11)
+# print(myAtt.get_instrument("A"))
+# print(myAtt.get_instrument("B"))
+# print(myAtt.get_mode(human=True))
+# print(myAtt.get_value())
+# print(myAtt.get_channel())
+#
+#
+# myAtt.close()
