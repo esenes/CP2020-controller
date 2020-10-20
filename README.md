@@ -7,4 +7,6 @@ import Attenuator_flann_621
 
 attenuator = Attenuator_flann_621.Attenuator_flann_621("128.141.161.239", 11, "A")
 attenuator.set_value(16) # dB
+
+attenuator.close()
 ```
