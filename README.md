@@ -3,10 +3,12 @@ Code to control a Flann microwave CP2020 motion controller
 
 Basic usage:
 ```
-import Attenuator_flann_621
+import CP2020
 
-attenuator = Attenuator_flann_621.Attenuator_flann_621("128.141.161.239", 11, "A")
-attenuator.set_value(16) # dB
+controller = CP2020.CP2020("1.1.1.1", 11)
 
-attenuator.close()
+controller.set_instrument(10, "A")  # set the attenuator on channel A to 10 dB
+controller.set_instrument(400, "B") # set the phase shifter on channel B to 400 degrees
+
+controller.close()
 ```
