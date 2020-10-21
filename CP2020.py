@@ -96,23 +96,26 @@ class CP2020(plx_gpib_ethernet.PrologixGPIBEthernetDevice):
         return self.write('SSET '+str(step))
 
 
+    # ----- CUSTOM SET COMMANDS
+    def set_instrument(self, value, channel, verbose=False, n_attempts=5):
+        '''
+        Set the instrument connected on that channel, then checks that the
+        command is received
+        '''
+        if self.get_channel() != channel:
+            self.set_channel(channel)
 
-
-
-
-
-
-
-
-
-
-
-# myAtt = CP2020("128.141.161.230", 11)
-# print(myAtt.get_instrument("A"))
-# print(myAtt.get_instrument("B"))
-# print(myAtt.get_mode(human=True))
-# print(myAtt.get_value())
-# print(myAtt.get_channel())
-#
-#
-# myAtt.close()
+        self.write('VSET '+str(value))
+        # check that it set
+        iteration = 0
+        while iteration < n_attempts and self.get_value() != value:
+            iteration += 1
+            self.write('VSET '+str(value))
+            sleep(1)
+            if verbose: print('Failed to set value. Retry '+str(iteration)+'/'+str(n_attempts))
+        else:
+            current_val = self.get_value()
+            if current_val != value:
+                raise IOError("Impossible to set value, check the connection.")
+            if current_val == value:
+                if verbose: print('Succedeed.')
