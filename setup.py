@@ -26,6 +26,6 @@ setup(name='CP2020-controller',
     packages=find_packages(),
     classifiers=CLASSIFIERS,
     install_requires=REQUIREMENTS,
-    dependency_links=['git+https://github.com/nelsond/prologix-gpib-ethernet.git'],
+    dependency_links=['git+https://github.com/nelsond/prologix-gpib-ethernet.git#egg=0.2.0'],
     keywords='GPIB flann attenuator phase-shifter wrapper',
 )
