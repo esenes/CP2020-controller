@@ -1,14 +1,17 @@
 # CP2020-controller
-Code to control a Flann microwave CP2020 motion controller
+Code to control a Flann microwave CP2020 motion controller via a Prologix GPIB to Ethernet adapter
 
-Basic usage:
+## Installation:
+
+You will need somehow to install Nelsond's repo for the prologix controller (https://github.com/nelsond/prologix-gpib-ethernet). 
+
+With internet access:
 ```
-import CP2020
-
-controller = CP2020.CP2020("1.1.1.1", 11)
-
-controller.set_instrument(10, "A")  # set the attenuator on channel A to 10 dB
-controller.set_instrument(400, "B") # set the phase shifter on channel B to 400 degrees
-
-controller.close()
+pip install -e .
 ```
+
+Without internet access: get a local copy of the repository first, pip install it, and then proceed to installing this package.
+
+## Example usage: 
+
+See the tests folder.
