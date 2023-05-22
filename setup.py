@@ -5,7 +5,7 @@ with open("README.md", 'r', encoding='utf-8') as fh:
     long_description = fh.read()
 
 # requirements
-REQUIREMENTS = ['prologix_gpib_ethernet @ git+https://github.com/nelsond/prologix-gpib-ethernet.git']
+REQUIREMENTS = ['prologix_gpib_ethernet']
 
 # more details
 CLASSIFIERS = [
@@ -26,5 +26,6 @@ setup(name='CP2020-controller',
     packages=find_packages(),
     classifiers=CLASSIFIERS,
     install_requires=REQUIREMENTS,
+    dependency_links=['https://github.com/nelsond/prologix-gpib-ethernet.git'],
     keywords='GPIB flann attenuator phase-shifter wrapper',
 )
